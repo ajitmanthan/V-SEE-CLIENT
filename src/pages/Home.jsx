@@ -227,17 +227,18 @@ console.log('✌️isRequestSent --->', isRequestSent,a);
 
 
   // ###############################  show request ######################################
+  if(activeTab==2){
   const friendreq = async () => {
-       try {
+    try {
       const response = await axios.get(
-        'http://localhost:9999/friendreq',
+        'http://localhost:9999/friend-requests',
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      
+
       console.log('response: ', response.data);
       const responseMessage = response.data.msg;
       toast(responseMessage); // Show toaster message for whatever response is received
@@ -245,7 +246,8 @@ console.log('✌️isRequestSent --->', isRequestSent,a);
       toast('An error occurred. Please try again.'); // Show error message
     }
   };
-
+  friendreq()
+}
 
   const acceptFriendRequest = async (fromUserId) => {
     // Call your API to accept the friend request
@@ -644,3 +646,31 @@ console.log('✌️isRequestSent --->', isRequestSent,a);
 
 export default Home;
 
+      
+router.get('/friend-requests',authMiddleware, async (req, res) => {
+  try {
+      const sessionUserId = req.user_id;
+      const user = await newuser.findOne({ user_id: sessionUserId });
+
+      if (!user) {
+          return res.status(404).json({ message: 'User not found' });
+      }
+
+      const friendRequests = user.friend_requests;
+
+      const detailedFriendRequests = await Promise.all(friendRequests.map(async (request) => {
+          const fromUserId = request.from_user;
+          const fromUser = await newuser.findOne({ user_id: fromUserId });
+
+          return {
+              ...request,
+              from_user_details: fromUser || 'User not found',
+          };
+      }));
+
+      console.log('detailedFriendRequests: ', detailedFriendRequests);
+      res.json({ friend_requests: detailedFriendRequests });
+  } catch (error) {
+      res.status(500).json({ message: 'Server error' });
+  }
+});
