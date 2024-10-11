@@ -200,22 +200,16 @@ function Home() {
 
 
   // ###############################  add friend ######################################
-  const addfriend = async (userId, isRequestSent) => {
+  const addfriend = async (a, isRequestSent) => {
+console.log('✌️isRequestSent --->', isRequestSent,a);
+    
     const action = isRequestSent ? 'Cancel' : 'Add';
 
-    try {
-      const response = await axios.post(
-        'http://localhost:9999/addfriend',
-        { userId, action },
 
-  const addfriend = async (e) => {
-    const { id, action } = e.currentTarget; 
-    const userId = id.addfrnd;
-    
     try {
       const response = await axios.post(
-        'http://localhost:9999/addfriend', // Same endpoint for both actions
-        { userId, action }, // Pass action in request body
+        'https://vsee.onrender.com/addfriend', // Same endpoint for both actions
+        { a, action }, // Pass action in request body
 
         {
           headers: {
@@ -278,26 +272,6 @@ function Home() {
   };
   
 
-=======
-  
-      const responseMessage = response.data.msg;
-  
-      // Update UI based on API response
-      if (responseMessage === 'already') {
-        console.log('Friend request already sent, changing button to Cancel');
-        // Handle UI to show "Cancel" if already sent
-      } else if (responseMessage === 'request canceled') {
-        console.log('Friend request canceled, changing button to Add');
-        // Handle UI to revert back to "Add" button
-      } else if (responseMessage === 'request sent') {
-        console.log('Friend request sent successfully');
-        // Handle UI to show "Cancel" button
-      }
-    } catch (error) {
-      console.error('Error:', error);
-    }
-  };
-
   const onEmojiClick = (emojiObject) => {
     setMssg((prevMssg) => prevMssg + emojiObject.emoji);
     setShowPicker(false);
@@ -318,16 +292,15 @@ function Home() {
     <>
       <div className="h-screen overflow-hidden">
         <div className="flex py-4 border sticky top-0 z-10 bg-blue-50 shadow-md">
-          <div className="w-1/4 text-center">
-            <div className="relative">
-              <input
-                type="text"
-                onChange={addSearch}
-                placeholder="Search for friends"
-                className="p-2 w-10/12 rounded-lg shadow-sm"
-              />
-
-              <div className="absolute z-10 w-full max-w-md bg-white shadow-lg rounded-lg">
+            <div className="w-1/4 text-center">
+          <div className="relative">
+            <input
+              type="text"
+              onChange={addSearch}
+              placeholder="Search for friends"
+              className="p-2 w-10/12 rounded-lg shadow-sm"
+            />
+          <div className="absolute z-10 w-full max-w-md bg-white shadow-lg rounded-lg">
                 {results.map((user) => {
                   const hasSentRequest = user.friend_requests.some(
                     (request) => request.from_user === sessionUser.user_id
@@ -356,12 +329,9 @@ function Home() {
                     </div>
                   );
                 })}
-
-
-
-              </div>
-            </div>
+             </div>
           </div>
+        </div>
 
           <div className="w-3/4 flex justify-between">
             <div className="chatuser px-5">
@@ -387,7 +357,7 @@ function Home() {
               <HiDotsVertical />
             </div>
           </div>
-=======
+
          {results.map((user) => (
   <div
     key={user.user_id}
@@ -620,7 +590,7 @@ function Home() {
         </div>
       </div>
       <ToastContainer />
-=======
+
 
                   {showPicker && (
                     <div className="emoji-picker-container">
